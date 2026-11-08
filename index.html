@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<!-- lang="pt-BR": avisa o navegador e os leitores de tela qual é o idioma -->
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <!-- viewport: faz o site se ajustar bem em celular -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fechamento de OS - Engenharia Clínica</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- BOA PRÁTICA (acessibilidade): link para quem navega só com o teclado
+       pular direto para o conteúdo. Só aparece quando recebe o foco (Tab). -->
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- ================= TOPO DA PÁGINA ================= -->
+  <header class="topo">
+    <div class="topo-interno">
+      <div>
+        <h1>Fechamento de OS</h1>
+        <p class="subtitulo">Engenharia Clínica: modelos prontos para copiar</p>
+      </div>
+
+      <!-- role="search" ajuda leitores de tela a achar a área de busca -->
+      <div class="busca-area" role="search">
+        <!-- BOA PRÁTICA: todo campo precisa de um <label>.
+             Aqui ele fica escondido (so-leitor), mas existe para acessibilidade. -->
+        <label class="so-leitor" for="busca">Pesquisar modelos</label>
+        <input id="busca" type="search" placeholder="Pesquisar modelos, POPs, equipamentos…">
+        <button type="button" class="botao-secundario" id="btn-historico">Histórico</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MENU DE ABAS ================= -->
+  <!-- <nav> = área de navegação. O JavaScript cria os botões aqui dentro. -->
+  <nav class="abas" id="abas" aria-label="Tipos de ordem de serviço"></nav>
+
+  <!-- ================= CONTEÚDO PRINCIPAL ================= -->
+  <!-- <main> só pode existir uma vez por página: é o conteúdo principal -->
+  <main id="conteudo">
+
+    <!-- O JavaScript monta aqui as seções (Calibração, TSE, Preventiva...) -->
+    <div id="area-secoes"></div>
+
+    <!-- Mensagem para quando a busca não encontra nada (feedback ao usuário) -->
+    <p class="sem-resultado" id="sem-resultado" hidden>
+      Nenhum modelo encontrado. Tente outra palavra.
+    </p>
+
+    <!-- Seção do catálogo de POPs (esta é fixa no HTML) -->
+    <section class="secao" data-id="pops" aria-labelledby="titulo-pops">
+      <div class="secao-cabecalho">
+        <div>
+          <h2 id="titulo-pops">Catálogo de POPs</h2>
+          <p>Em POPs de preventiva, o botão “Texto OS” abre o modelo já preenchido.</p>
+        </div>
+        <label class="so-leitor" for="filtro-pops">Filtrar POPs</label>
+        <input id="filtro-pops" type="search" placeholder="Filtrar: 023, hemodiálise…">
+      </div>
+
+      <div class="tabela-caixa">
+        <!-- Tabela semântica: caption descreve, th scope="col" identifica colunas -->
+        <table>
+          <caption class="so-leitor">Lista de POPs da Engenharia Clínica</caption>
+          <thead>
+            <tr>
+              <th scope="col">Código</th>
+              <th scope="col">Procedimento</th>
+              <th scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-pops"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <p>Revise sempre o texto antes de colar na OS.</p>
+  </footer>
+
+  <!-- ================= JANELA (MODAL) DO TEXTO ================= -->
+  <!-- <dialog> é a tag nativa de janela: já trata Esc, foco e fundo escuro -->
+  <dialog id="modal" aria-labelledby="modal-titulo">
+    <div class="modal-topo">
+      <div>
+        <h2 id="modal-titulo"></h2>
+        <p class="modal-tipo" id="modal-tipo"></p>
+      </div>
+      <button type="button" class="botao-fechar" id="modal-x" aria-label="Fechar janela">×</button>
+    </div>
+
+    <div class="modal-corpo">
+      <!-- Os campos (empresa, POP, certificado...) são criados pelo JavaScript -->
+      <div id="modal-campos"></div>
+
+      <label class="rotulo" for="texto-final">Texto da OS (pode editar antes de copiar)</label>
+      <textarea id="texto-final" rows="6"></textarea>
+    </div>
+
+    <div class="modal-rodape">
+      <button type="button" class="botao-secundario" id="modal-cancelar">Cancelar</button>
+      <button type="button" class="botao-principal" id="modal-copiar">Copiar texto</button>
+    </div>
+  </dialog>
+
+  <!-- ================= JANELA DO HISTÓRICO ================= -->
+  <dialog id="modal-historico" aria-labelledby="historico-titulo">
+    <div class="modal-topo">
+      <div>
+        <h2 id="historico-titulo">Histórico</h2>
+        <p class="modal-tipo">Últimos textos copiados neste navegador</p>
+      </div>
+      <button type="button" class="botao-fechar" id="historico-x" aria-label="Fechar janela">×</button>
+    </div>
+    <div class="modal-corpo" id="historico-lista"></div>
+    <div class="modal-rodape">
+      <button type="button" class="botao-secundario" id="historico-limpar">Limpar histórico</button>
+      <button type="button" class="botao-principal" id="historico-fechar">Fechar</button>
+    </div>
+  </dialog>
+
+  <!-- Sugestões de POP para o campo de POP do modal (autocompletar nativo) -->
+  <datalist id="lista-pops"></datalist>
+
+  <!-- Aviso rápido ("Texto copiado"). role="status" faz o leitor de tela avisar -->
+  <p class="aviso" id="aviso" role="status"></p>
+
+  <!-- Scripts no FINAL da página: assim o HTML já existe quando o JS roda.
+       A ordem importa: primeiro os dados, depois a lógica. -->
+  <script src="pops.js"></script>
+  <script src="dados.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
