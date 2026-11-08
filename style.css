@@ -1,0 +1,567 @@
+/* ==========================================================
+   style.css  |  VISUAL DO SITE
+   ----------------------------------------------------------
+   Organização:
+   1. Variáveis (cores)   2. Base   3. Topo e abas
+   4. Seções e cards      5. Tabela   6. Janelas (modal)
+   7. Aviso               8. Acessibilidade
+   ========================================================== */
+
+
+/* ---------- 1. VARIÁVEIS ----------
+   Guardar cores em variáveis evita repetir o mesmo valor várias vezes.
+   Para mudar uma cor do site, basta alterar aqui. */
+:root {
+  --fundo: #080d1a;
+  --superficie: #0f172a;
+  --superficie-escura: #0b1222;
+  --borda: #1e293b;
+  --borda-forte: #334155;
+  --texto: #f1f5f9;
+  --texto-suave: #94a3b8;
+  --destaque: #22d3ee;
+  --verde: #34d399;     /* usado SÓ para "Conforme" */
+  --vermelho: #fb7185;  /* usado SÓ para "Não conforme" */
+  color-scheme: dark;
+}
+
+
+/* ---------- 2. BASE ---------- */
+* {
+  box-sizing: border-box; /* padding não aumenta o tamanho do elemento */
+}
+
+/* Faz o atributo hidden esconder mesmo quando o elemento tem "display" */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+button, input, textarea {
+  font: inherit;  /* botões e campos usam a mesma fonte do site */
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* BOA PRÁTICA (UX): contorno visível ao navegar com Tab */
+:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 2px;
+}
+
+
+/* ---------- 3. TOPO E ABAS ---------- */
+.topo {
+  position: sticky;   /* fica fixo no topo ao rolar a página */
+  top: 0;
+  z-index: 5;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borda);
+}
+
+.topo-interno {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  flex-wrap: wrap;    /* no celular, a busca desce para a linha de baixo */
+  gap: 12px 24px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+h1 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.subtitulo {
+  margin: 0;
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+.busca-area {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 260px;
+}
+
+input[type="search"] {
+  width: min(380px, 100%);
+  min-height: 42px;   /* BOA PRÁTICA: área de clique/toque confortável */
+  background: var(--fundo);
+  border: 1px solid var(--borda-forte);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+main,
+.abas {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.abas {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;   /* no celular, as abas rolam para o lado */
+  padding-top: 16px;
+  padding-bottom: 12px;
+}
+
+.abas button {
+  flex: none;
+  min-height: 40px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--texto-suave);
+  padding: 8px 14px;
+}
+
+.abas button:hover {
+  color: var(--texto);
+  background: var(--superficie);
+}
+
+/* A aba escolhida fica destacada (feedback de "onde estou") */
+.abas button[aria-pressed="true"] {
+  color: var(--destaque);
+  background: #0c2a35;
+  border-color: #155e75;
+}
+
+main {
+  padding-top: 12px;
+  padding-bottom: 60px;
+}
+
+
+/* ---------- 4. SEÇÕES E CARDS ---------- */
+.secao {
+  margin-bottom: 34px;
+}
+
+.secao-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.secao-cabecalho h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.secao-cabecalho p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+/* Etiqueta com o procedimento (ex.: PRS ENG 04) */
+.etiqueta {
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+/* Grade: cria quantas colunas couberem na tela, sozinha */
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 14px;
+}
+
+.grade-equipamentos {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+}
+
+/* CARD
+   A cor vem da variável --cor, que o JavaScript define em cada card.
+   hsl(matiz saturação luminosidade / transparência).
+   Mesmo tipo de card = mesma cor em TODAS as abas (cérebro aprende o padrão). */
+.card {
+  --cor: hsl(var(--matiz) 70% 62%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid hsl(var(--matiz) 70% 62% / 0.3);
+  border-top: 4px solid var(--cor);
+  background: hsl(var(--matiz) 70% 62% / 0.07);
+}
+
+.card-tipo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cor);
+}
+
+/* Bolinha colorida antes do nome do tipo */
+.card-tipo::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cor);
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.card p {
+  flex: 1;           /* empurra os botões para o fim do card */
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+.botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.botao-modelo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+}
+
+.botao-modelo:hover {
+  border-color: var(--cor);
+}
+
+/* Bolinha de status dentro do botão */
+.botao-modelo i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--texto-suave);
+}
+
+.botao-modelo.ok i { background: var(--verde); }
+.botao-modelo.nc i { background: var(--vermelho); }
+
+.sem-resultado {
+  padding: 30px;
+  text-align: center;
+  color: var(--texto-suave);
+}
+
+
+/* ---------- 5. TABELA DE POPs ---------- */
+.tabela-caixa {
+  max-height: 460px;
+  overflow: auto;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th {
+  position: sticky;   /* cabeçalho fica visível ao rolar a tabela */
+  top: 0;
+  background: var(--superficie-escura);
+  text-align: left;
+  font-weight: 500;
+  color: var(--texto-suave);
+  padding: 10px 14px;
+}
+
+td {
+  padding: 9px 14px;
+  border-top: 1px solid var(--borda);
+}
+
+td:first-child {
+  font-family: ui-monospace, Consolas, monospace;
+  font-weight: 600;
+  color: var(--destaque);
+  white-space: nowrap;
+}
+
+td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.botao-pequeno {
+  min-height: 32px;
+  background: var(--fundo);
+  border: 1px solid var(--borda-forte);
+  border-radius: 8px;
+  padding: 3px 10px;
+  font-size: 13px;
+}
+
+.botao-pequeno:hover {
+  border-color: var(--destaque);
+}
+
+
+/* ---------- 6. JANELAS (MODAL) ---------- */
+dialog {
+  --matiz: 190;       /* o JavaScript troca este valor para cada tipo de card */
+  --cor: hsl(var(--matiz) 70% 62%);
+  width: min(600px, calc(100% - 24px));
+  max-height: calc(100% - 24px);
+  padding: 0;
+  background: var(--superficie);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+}
+
+dialog::backdrop {
+  background: rgba(4, 8, 16, 0.75);  /* fundo escurecido atrás da janela */
+}
+
+.modal-topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--superficie-escura);
+  border-top: 4px solid var(--cor);
+  border-bottom: 1px solid var(--borda);
+  border-radius: 14px 14px 0 0;
+}
+
+.modal-topo h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.modal-tipo {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cor);
+}
+
+.botao-fechar {
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--texto-suave);
+}
+
+.modal-corpo {
+  padding: 16px 20px;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.campo {
+  margin-bottom: 12px;
+}
+
+.rotulo,
+.campo label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+.campo input,
+textarea {
+  width: 100%;
+  background: var(--fundo);
+  border: 1px solid var(--borda-forte);
+  border-radius: 8px;
+  padding: 9px 10px;
+}
+
+textarea {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+/* Atalhos de empresa */
+.atalhos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.atalho {
+  min-height: 30px;
+  border: 0;
+  border-radius: 6px;
+  background: hsl(var(--matiz) 70% 62% / 0.18);
+  color: var(--cor);
+  padding: 3px 10px;
+  font-size: 13px;
+}
+
+.atalho.salvar {
+  background: none;
+  border: 1px dashed var(--borda-forte);
+  color: var(--texto-suave);
+}
+
+.modal-rodape {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px 16px;
+  background: var(--superficie-escura);
+  border-top: 1px solid var(--borda);
+  border-radius: 0 0 14px 14px;
+}
+
+.botao-principal,
+.botao-secundario {
+  min-height: 42px;
+  border-radius: 10px;
+  padding: 8px 18px;
+}
+
+.botao-principal {
+  background: var(--cor, var(--destaque));
+  border: 0;
+  color: #06101a;
+  font-weight: 700;
+}
+
+.botao-secundario {
+  background: none;
+  border: 1px solid var(--borda-forte);
+  color: var(--texto-suave);
+}
+
+/* Itens do histórico */
+.item-historico {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+}
+
+.item-historico-topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+.item-historico p {
+  margin: 6px 0 8px;
+  font-size: 13px;
+}
+
+
+/* ---------- 7. AVISO ---------- */
+.aviso {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  max-width: calc(100% - 40px);
+  margin: 0;
+  padding: 10px 16px;
+  background: var(--superficie);
+  border: 1px solid var(--borda-forte);
+  border-radius: 10px;
+  font-size: 14px;
+  opacity: 0;               /* invisível por padrão */
+  pointer-events: none;
+  transition: opacity 0.25s;
+  z-index: 99;
+}
+
+.aviso.visivel {
+  opacity: 1;
+}
+
+.rodape {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 20px 30px;
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+
+/* ---------- 8. ACESSIBILIDADE ---------- */
+
+/* Esconde só visualmente: leitores de tela continuam lendo */
+.so-leitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Link "pular conteúdo": escondido até receber o foco com Tab */
+.pular-conteudo {
+  position: absolute;
+  left: 8px;
+  top: -60px;
+  z-index: 100;
+  background: var(--destaque);
+  color: #06101a;
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+
+.pular-conteudo:focus {
+  top: 8px;
+}
+
+/* Quem prefere menos animação não vê a transição */
+@media (prefers-reduced-motion: reduce) {
+  .aviso {
+    transition: none;
+  }
+}
